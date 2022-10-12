@@ -10,7 +10,7 @@ android {
     buildToolsVersion BUILD_TOOLS_VERSION
 
     defaultConfig {
-        applicationId "net.kibotu.berlingeiger"
+        applicationId "net.kibotu.geiger"
         minSdkVersion MIN_SDK_VERSION
         targetSdkVersion TARGET_SDK_VERSION
         versionCode VERSIONCODE

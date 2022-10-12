@@ -1,7 +1,5 @@
 package net.kibotu.berlingeiger.features
 
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -9,18 +7,23 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
-import kotlinx.datetime.Instant
-import kotlinx.datetime.LocalDate
+import kotlinx.datetime.Clock
 import kotlinx.datetime.toInstant
+import kotlinx.datetime.toJavaInstant
 import kotlinx.datetime.toLocalDate
 import timber.log.Timber
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.*
 
 
 class GeigerViewModel : ViewModel() {
 
-    val allMeasurements: MutableState<Map<LocalDate, Measurement>> = mutableStateOf(emptyMap())
+    val state = MeasurementsStateHolder()
 
-    val measurements: MutableState<List<Measurement>> = mutableStateOf(emptyList())
+    init {
+        loadDay(formatter.format(Clock.System.now().toJavaInstant()))
+    }
 
     fun loadAll() {
         val database = Firebase.database
@@ -57,7 +60,7 @@ class GeigerViewModel : ViewModel() {
                     )
                 }
 
-                allMeasurements.value = measurements.map { it.key to it.value.last() }
+                state.allMeasurements.value = measurements.map { it.key to it.value.last() }
                     .associate { it.first to it.second }
             }
 
@@ -89,7 +92,7 @@ class GeigerViewModel : ViewModel() {
                         )
                     }?.sortedBy { it.date }
 
-                this@GeigerViewModel.measurements.value = measurement.orEmpty()
+                state.measurements.value = measurement.orEmpty()
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -99,8 +102,6 @@ class GeigerViewModel : ViewModel() {
     }
 }
 
-data class Measurement(
-    val date: Instant?,
-    val cpm: Int,
-    val usvh: Double
-)
+var formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    .withLocale(Locale.GERMANY)
+    .withZone(ZoneId.systemDefault())
