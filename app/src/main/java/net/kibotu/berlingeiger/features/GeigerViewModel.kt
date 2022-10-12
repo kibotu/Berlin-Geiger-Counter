@@ -22,7 +22,7 @@ class GeigerViewModel : ViewModel() {
     val state = MeasurementsStateHolder()
 
     init {
-        loadDay(formatter.format(Clock.System.now().toJavaInstant()))
+        loadDay(yyyyMMdd.format(Clock.System.now().toJavaInstant()))
     }
 
     fun loadAll() {
@@ -102,6 +102,10 @@ class GeigerViewModel : ViewModel() {
     }
 }
 
-var formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+var yyyyMMdd: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    .withLocale(Locale.GERMANY)
+    .withZone(ZoneId.systemDefault())
+
+var ddMMyyyy: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy")
     .withLocale(Locale.GERMANY)
     .withZone(ZoneId.systemDefault())

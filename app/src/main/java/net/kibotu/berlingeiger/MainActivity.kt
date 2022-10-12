@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package net.kibotu.berlingeiger
 
 import android.os.Bundle
@@ -8,17 +10,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Divider
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlinx.datetime.toJavaInstant
 import net.kibotu.berlingeiger.features.GeigerViewModel
+import net.kibotu.berlingeiger.features.MeasurementsStateHolder
+import net.kibotu.berlingeiger.features.ddMMyyyy
 import net.kibotu.berlingeiger.ui.theme.BerlinGeigerTheme
 
 class MainActivity : ComponentActivity() {
@@ -29,32 +30,22 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
+
             BerlinGeigerTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    val measurements by viewModel.state.measurements
 
-                    LazyColumn {
-                        items(measurements, key = { it.date.toString() }) { item ->
-
-                            Row(modifier = Modifier.fillMaxWidth().padding(4.dp)) {
-                                Text(text = "${item.date}")
-                                Spacer(modifier = Modifier.weight(1f))
-                                Text(text = "${item.cpm}")
-                                Spacer(modifier = Modifier.weight(1f))
-                                Text(text = "${item.usvh}")
+                Scaffold(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.background),
+                    topBar = {
+                        TopAppBar(
+                            title = {
+                                Text(text = "Today")
                             }
-
-                            Divider(
-                                modifier = Modifier
-                                    .background(Color(0xFFF4F4F4))
-                                    .fillMaxWidth()
-                                    .height(1.dp)
-                            )
-                        }
+                        )
                     }
+                ) {
+                    MeasurementList(Modifier.padding(it), viewModel.state)
                 }
             }
         }
@@ -62,14 +53,31 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
+fun MeasurementList(modifier: Modifier, state: MeasurementsStateHolder) {
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    BerlinGeigerTheme {
-        Greeting("Android")
+    val measurements by state.measurements
+
+    LazyColumn(modifier = modifier) {
+        items(measurements.reversed(), key = { it.date.toString() }) { item ->
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(4.dp)
+            ) {
+                Text(text = ddMMyyyy.format(item.date?.toJavaInstant()))
+                Spacer(modifier = Modifier.weight(1f))
+                Text(text = "${item.cpm}")
+                Spacer(modifier = Modifier.weight(1f))
+                Text(text = "${item.usvh}")
+            }
+
+            Divider(
+                modifier = Modifier
+                    .background(Color(0xFFF4F4F4))
+                    .fillMaxWidth()
+                    .height(1.dp)
+            )
+        }
     }
 }
