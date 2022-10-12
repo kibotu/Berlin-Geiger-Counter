@@ -9,6 +9,11 @@ ext {
     isLocal = project.rootProject.file('local.properties').exists()
     isCi = !isLocal
 
+    STORE_FILE = findProperty("storeFile")
+    STORE_PASSWORD = findProperty("storePassword")
+    KEY_ALIAS = findProperty("keyAlias")
+    KEY_PASSWORD = findProperty("keyPassword")
+
     println()
     println "Injected variables - SDK"
     println "Build Tools: $BUILD_TOOLS_VERSION"
@@ -18,6 +23,7 @@ ext {
     println "Kotlin: $KOTLIN_VERSION"
     println "COMPOSE: $KOTLIN_COMPILER_EXTENSION_VERSION"
     println()
+
 
     MAJOR_VERSION = project.hasProperty("major") ? Integer.parseInt(major) : 1
     MINOR_VERSION = project.hasProperty("minor") ? Integer.parseInt(minor) : 0

@@ -22,18 +22,41 @@ android {
         }
     }
 
+    // region signingConfigs
+
+    signingConfigs {
+
+        debug {
+            storeFile file(STORE_FILE != null ? STORE_FILE : "keystore/release.jks")
+            storePassword STORE_PASSWORD != null ? STORE_PASSWORD : "@p2zEG9_^V`PN@L&"
+            keyAlias KEY_ALIAS != null ? KEY_ALIAS : "release"
+            keyPassword KEY_PASSWORD != null ? KEY_PASSWORD : "@p2zEG9_^V`PN@L&"
+        }
+
+        release {
+            storeFile file(STORE_FILE != null ? STORE_FILE : "keystore/release.jks")
+            storePassword STORE_PASSWORD != null ? STORE_PASSWORD : "@p2zEG9_^V`PN@L&"
+            keyAlias KEY_ALIAS != null ? KEY_ALIAS : "release"
+            keyPassword KEY_PASSWORD != null ? KEY_PASSWORD : "@p2zEG9_^V`PN@L&"
+        }
+    }
+
+    // endregion
+
     // region build types
 
     buildTypes {
         debug {
+            signingConfig signingConfigs.debug
             debuggable true
             minifyEnabled false
             crunchPngs false
             shrinkResources false
-            zipAlignEnabled true
+            zipAlignEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         release {
+            signingConfig signingConfigs.release
             minifyEnabled true
             shrinkResources true
             crunchPngs true
@@ -43,7 +66,6 @@ android {
     }
 
     // endregion
-
 
     // region compile options
 
@@ -88,11 +110,15 @@ android {
 
     // endregion
 
+    // region packing options
+
     packagingOptions {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
+
+    // endregion
 }
 
 apply from: "../buildSrc/module_dependencies.gradle"
