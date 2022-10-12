@@ -15,15 +15,33 @@ ext {
             // https://mvnrepository.com/artifact/androidx.compose.ui/ui
             // https://developer.android.com/jetpack/compose/setup
             "androidx.compose.ui:ui"                    : "1.2.1",
-            "androidx.compose.ui:ui-tooling"            : "1.2.1",
             "androidx.compose.ui:ui-tooling-preview"    : "1.2.1",
+            "androidx.compose.ui:ui-tooling"            : "1.2.1", // only for debug
+            "androidx.compose.ui:ui-test-manifest"      : "1.2.1", // only for debug
             "androidx.activity:activity-compose"        : "1.6.0",
 
             // https://mvnrepository.com/artifact/androidx.compose.material3/material3
             "androidx.compose.material3:material3"      : "1.0.0-rc01",
 
-            "androidx.lifecycle:lifecycle-runtime-ktx"  : "2.5.1"
+            "androidx.lifecycle:lifecycle-runtime-ktx"  : "2.5.1",
 
+            // https://developer.android.com/studio/write/java8-support#library-desugaring
+            // https://mvnrepository.com/artifact/com.android.tools/desugar_jdk_libs?repo=google
+            "com.android.tools:desugar_jdk_libs"        : "1.2.2",
+
+            // region instrumentation tests
+
+            "androidx.test.ext:junit"                   : "1.1.3",
+            "androidx.test.espresso:espresso-core"      : "3.4.0",
+            "androidx.compose.ui:ui-test-junit4"        : "1.2.1",
+
+            // endregion
+
+            // region unit tests
+
+            "junit:junit"                               : "4.13.2"
+
+            // endregion
     ]
 
     getLibrary = { String lib ->
