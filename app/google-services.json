@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "214232687831",
+    "firebase_url": "https://geiger-f5c68-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "geiger-f5c68",
+    "storage_bucket": "geiger-f5c68.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:214232687831:android:a133356bc713555dcb3c92",
+        "android_client_info": {
+          "package_name": "net.kibotu.geiger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "214232687831-vd09ueo5vv5fcj466mvpup6r1c4m8qor.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "net.kibotu.geiger",
+            "certificate_hash": "fddf93abba5503e5b07642615f9320d09956af9b"
+          }
+        },
+        {
+          "client_id": "214232687831-8brsk1dkfctl34ka7h29hq61bvp132ea.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDAuWvfE5z7RMeVr5D2VdO7QMfm-trQJb4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "214232687831-8brsk1dkfctl34ka7h29hq61bvp132ea.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

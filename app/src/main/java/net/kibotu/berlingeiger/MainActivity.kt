@@ -13,8 +13,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import net.kibotu.berlingeiger.ui.theme.BerlinGeigerTheme
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             BerlinGeigerTheme {
                 Surface(
