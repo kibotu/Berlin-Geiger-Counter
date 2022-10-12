@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -98,7 +99,14 @@ apply from: "../buildSrc/module_dependencies.gradle"
 
 dependencies {
 
+    implementation platform(getLibrary("com.google.firebase:firebase-bom"))
+    implementation getLibrary("com.google.firebase:firebase-database-ktx")
+
+    implementation getLibrary("com.jakewharton.timber:timber")
+
     coreLibraryDesugaring getLibrary("com.android.tools:desugar_jdk_libs")
+
+    implementation getLibrary("org.jetbrains.kotlinx:kotlinx-datetime")
 
     implementation getLibrary("androidx.core:core-ktx")
     implementation getLibrary("androidx.compose.material3:material3")
