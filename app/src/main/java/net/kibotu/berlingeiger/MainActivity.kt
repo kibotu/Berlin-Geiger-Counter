@@ -28,6 +28,7 @@ import net.kibotu.berlingeiger.features.GeigerViewModel
 import net.kibotu.berlingeiger.features.MeasurementsStateHolder
 import net.kibotu.berlingeiger.features.ddMMyyyy
 import net.kibotu.berlingeiger.ui.theme.BerlinGeigerTheme
+import timber.log.Timber
 import kotlin.math.roundToInt
 
 class MainActivity : ComponentActivity() {
@@ -71,7 +72,8 @@ private fun DrawGraph(modifier: Modifier, state: MeasurementsStateHolder) {
 
     val measurements by state.measurements
 
-//    val maxMeasurement = measurements.maxBy { it.usvh }
+    val maxMeasurement = measurements.maxByOrNull { it.usvh }
+    Timber.v("max measurement $maxMeasurement ")
 
     val density = LocalDensity.current.density
     val configuration = LocalConfiguration.current
