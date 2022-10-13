@@ -2,6 +2,8 @@
 
 Shows realtime gamma radiation measurements of Berlin.
 
+[![Screenshot](docs/screenshot_today.png)](docs/screenshot_today.png)
+
 ### Notes
 
 Follow me on Twitter: [![Twitter Follow](https://img.shields.io/twitter/follow/wolkenschauer.svg?style=social)](https://twitter.com/wolkenschauer)
