@@ -6,13 +6,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -22,8 +19,13 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.airbnb.android.showkase.models.Showkase
+import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toJavaInstant
+import kotlinx.datetime.toLocalDateTime
 import net.kibotu.berlingeiger.features.GeigerViewModel
 import net.kibotu.berlingeiger.features.MeasurementsStateHolder
 import net.kibotu.berlingeiger.features.ddMMyyyy
@@ -50,6 +52,15 @@ class MainActivity : ComponentActivity() {
                         TopAppBar(
                             title = {
                                 Text(text = "Today")
+                            },
+                            actions = {
+                                Icon(
+                                    modifier = Modifier.clickable {
+                                        startActivity(Showkase.getBrowserIntent(this@MainActivity))
+                                    },
+                                    painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                                    contentDescription = ""
+                                )
                             }
                         )
                     }
@@ -66,21 +77,15 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+data class MeasurementItem(val hour: Int, val minute: Int, val usvh: Double, val cpm: Int)
 
 @Composable
-private fun DrawGraph(modifier: Modifier, state: MeasurementsStateHolder) {
+private fun DrawGraph(modifier: Modifier = Modifier, state: MeasurementsStateHolder) {
 
     val measurements by state.measurements
 
     val maxMeasurement = measurements.maxByOrNull { it.usvh }
-    Timber.v("max measurement $maxMeasurement ")
-
-    val density = LocalDensity.current.density
-    val configuration = LocalConfiguration.current
-    val screenWidth = configuration.screenWidthDp.dp
-    val screenHeight = screenWidth * 3f / 4f
-    val screenWidthInPx = screenWidth.value * density
-    val screenHeightInPx = screenHeight.value * density
+    Timber.v("max measurement $maxMeasurement of ${measurements.size} measurements")
 
     val path = remember { Path() }
 
@@ -102,14 +107,50 @@ private fun DrawGraph(modifier: Modifier, state: MeasurementsStateHolder) {
             .padding(16.dp)
             .shadow(4.dp)
             .background(Color(0xFFEFEFEF))
-            .size(screenWidth, screenHeight)
+            .aspectRatio(4 / 3f)
     ) {
+
+        path.reset()
+
+        val map = measurements
+            .map {
+                val dateTime = it.date?.toLocalDateTime(TimeZone.currentSystemDefault())
+                val hour = dateTime?.hour ?: 0
+                val minute = dateTime?.minute ?: 0
+                MeasurementItem(hour, minute, it.usvh, it.cpm)
+            }
+            .groupBy {
+                it.hour to it.minute
+            }
+            .map {
+                MeasurementItem(
+                    it.key.first,
+                    it.key.second,
+                    usvh = it.value.map { it.usvh }.average(),
+                    cpm = it.value.map { it.cpm }.average().toInt()
+                )
+            }
+            .map {
+                Timber.v("$it")
+                val x = it.hour * (size.width / 24f) + it.minute * (size.width / 24f / 60f)
+                val y = it.usvh.toFloat() * size.height
+                x to y
+            }
+
+        Timber.v("per minute measurements ${map.size}")
+        val first = map.firstOrNull()
+        if (first != null) {
+            path.moveTo(first.first, first.second)
+        }
+        map.forEach { (x, y) ->
+            path.lineTo(x, y)
+        }
 
         // x-axe
         drawLine(
             color = Color.Black,
-            start = Offset(0f, screenHeightInPx),
-            end = Offset(screenWidthInPx, screenHeightInPx),
+            start = Offset(0f, size.height),
+            end = Offset(size.width, size.height),
             strokeWidth = 2.dp.toPx()
         )
 
@@ -117,8 +158,16 @@ private fun DrawGraph(modifier: Modifier, state: MeasurementsStateHolder) {
         drawLine(
             color = Color.Black,
             start = Offset(0f, 0f),
-            end = Offset(0f, screenHeightInPx),
+            end = Offset(0f, size.height),
             strokeWidth = 2.dp.toPx()
+        )
+
+        drawPath(
+            color = Color.Red,
+            path = path,
+            style = Stroke(
+                width = 0.2.dp.toPx()
+            )
         )
     }
 }
@@ -275,5 +324,13 @@ fun DrawCubic(modifier: Modifier) {
                 valueRange = 0f..screenWidthInPx,
             )
         }
+    }
+}
+
+@Preview(name = "Custom name for component", group = "Custom group name")
+@Composable
+fun DrawGraphPreview() {
+    BerlinGeigerTheme {
+        DrawGraph(state = MeasurementsStateHolder())
     }
 }
