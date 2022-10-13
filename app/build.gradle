@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'com.google.gms.google-services'
+    id 'com.google.devtools.ksp'
 }
 
 android {
@@ -119,11 +120,23 @@ android {
     }
 
     // endregion
+
+    // region ksp settings
+
+    ksp {
+        // showcase
+        arg("skipPrivatePreviews", "true")
+    }
+
+    // endregion
 }
 
 apply from: "../buildSrc/module_dependencies.gradle"
 
 dependencies {
+
+    implementation "com.airbnb.android:showkase:1.0.0-beta14"
+    ksp "com.airbnb.android:showkase-processor:1.0.0-beta14"
 
     implementation platform(getLibrary("com.google.firebase:firebase-bom"))
     implementation getLibrary("com.google.firebase:firebase-database-ktx")
@@ -153,3 +166,4 @@ dependencies {
     androidTestImplementation getLibrary("androidx.test.espresso:espresso-core")
     androidTestImplementation getLibrary("androidx.compose.ui:ui-test-junit4")
 }
+
